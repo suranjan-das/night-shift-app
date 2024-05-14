@@ -23,15 +23,23 @@
         {% if uploads_count > 0 %}
         <h5>{{ uploads_count }} file(s) uploaded in the uploads folder.</h5>
         {% endif %}
-        <h4>Instructions for EDM sheet:</h4>
-        1. Upload the old daily EDM
-        <br>
-        <h2>Generated Files:</h2>
+        <h4>Upload the following files:</h4>
+        <ul>
+            <li>Previous day APC file (APC_dd.mm.yyyy.xlsx)</li>
+            <li>Daily generation report (DAILY GENERATION REPORT ON THE DATE dd.mm.yyyy.xlsx)</li>
+            <li>Full schedule data from RLDC website for both stage (.xlsx format)</li>
+            <li>ABT report with DC, AG selected (Report_1.xls and Report_2.xls)</li>
+            <li>PI data file (PI dd.mm.yyyy.xlsx)</li>
+            <li>AGC data file of both stage (Talcher1/2_dd_mm_yyyy.csv)</li>
+        </ul>
+        <h3>Generated Files:</h3>
         <ul>
             {% for file in files %}
             <li><a href="/download/generated/{{ file }}">{{ file }}</a></li>
             {% endfor %}
         </ul>
+        <div id="loadingMessage" style="display: none;">Generating... Please wait.</div>
+        <br>
         <form id="generateForm" method="post" action="/generate" style="display: inline">
             <input type="submit" value="Generate Files">
         </form>

@@ -25,13 +25,16 @@ document.getElementById('generateForm').addEventListener('submit', function(even
         input.value = dateValue;
         this.appendChild(input);
     }
+
+    // Show the loading message
+    document.getElementById('loadingMessage').style.display = 'block';
 });
 
 // Add event listener to the upload form to check for file inputs
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     const fileInput = this.querySelector('input[type="file"]');
     if (!fileInput.files.length) {
-        alert('No files were uploaded!');
+        alert('Select files to upload!');
         event.preventDefault(); // Prevent form submission
     }
 });

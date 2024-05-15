@@ -5,28 +5,50 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f2f2f2;
+    line-height: 1.6;
+    color: #333;
 }
 
 .container {
     max-width: 800px;
-    margin: 20px auto;
+    margin: 40px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-left: 20px; /* Add left margin */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.container:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 h2, h4 {
     color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
 }
 
 form {
     margin-bottom: 20px;
 }
 
-input[type="file"] {
-    margin-bottom: 10px;
+input[type="file"], input[type="date"] {
+    display: block;
+    width: calc(100% - 20px);
+    margin-bottom: 20px;
+    padding: 12px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+input[type="file"]:hover, input[type="date"]:hover {
+    background-color: #f0f0f0;
+    border-color: #007bff;
 }
 
 ul {
@@ -35,59 +57,74 @@ ul {
 }
 
 ul li {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 a {
     text-decoration: none;
     color: #007bff;
+    transition: color 0.3s ease-in-out;
 }
 
 a:hover {
     text-decoration: underline;
+    color: #0056b3;
 }
 
 input[type="submit"] {
     background-color: #007bff;
     color: #fff;
     padding: 10px 20px;
+    font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
 }
 
 input[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-input[type="file"] {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px;
-    background-color: #f9f9f9;
-}
-
-input[type="file"]:hover {
-    background-color: #f0f0f0;
-}
-
-h4 {
-    color: #666;
-}
-
 label {
-    margin-right: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
 }
 
-/* Date picker styles */
-input[type="date"] {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px;
-    background-color: #f9f9f9;
+/* Loading message style */
+#loadingMessage {
+    font-size: 16px;
     color: #333;
+    text-align: center;
+    margin-top: 20px;
 }
 
-input[type="date"]:hover {
-    background-color: #f0f0f0;
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    input[type="file"], input[type="date"] {
+        width: calc(100% - 10px);
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+    }
+
+    label {
+        font-size: 18px;
+    }
+
+    h2, h4 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
 }

@@ -14,7 +14,7 @@
          <!-- Date Picker Section -->
          <label for="datePicker">Select Date: </label>
          <input type="date" id="datePicker" name="datePicker">
-         <br><br>
+         <br>
 
         <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
             <input type="file" name="file[]" multiple>
@@ -23,6 +23,7 @@
         {% if uploads_count > 0 %}
         <h5>{{ uploads_count }} file(s) uploaded in the uploads folder.</h5>
         {% endif %}
+        
         <h4>Upload the following files:</h4>
         <ul>
             <li>Previous day APC file (APC_dd.mm.yyyy.xlsx)</li>
@@ -47,5 +48,10 @@
             <input type="submit" value="Delete All Files">
         </form>
     </div>
+
+    <!-- Pass error message to JavaScript -->
+    <script>
+        window.errorMessage = "{{ error }}";
+    </script>
 </body>
 </html>

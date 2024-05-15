@@ -3,13 +3,26 @@ from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-from datetime import date, timedelta
+from datetime import timedelta
 import pandas as pd
 from copy import copy
+import os
 
 # prepare report file paths
 gsheet_url = "https://docs.google.com/spreadsheets/d/1O2vnJiMRhnPZ0Z_5p8YbBlPxNkgGbcoppq8wU4iv_hU/export?format=csv"
 
+def check_file_exists(file_path):
+    """Checks if a file exists.
+
+    Args:
+        file_path: The path to the file.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+    """
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"The file {file_path} does not exist.")
 
 def copy_range(source_wb: Workbook, destination_wb: Workbook, source_sheet_name: str,
                destination_sheet_name: str, row_range: tuple, source_col_num: int,
@@ -86,6 +99,8 @@ def prepare_apc_sheet(date):
     yesterday_apc_file_path = f"./uploads/APC_{pdt}.xlsx"
     pi_file_path = f"./uploads/PI {rdt}.xlsx"
     daily_gen_file_path = f"./uploads/DAILY GENERATION REPORT ON THE DATE {rdt}.xlsx"
+    for path in [yesterday_apc_file_path, pi_file_path, daily_gen_file_path]:
+        check_file_exists(path)
     # load the excel files into workbooks
     apc_previous = load_workbook(yesterday_apc_file_path)
     apc_today = copy(apc_previous)
@@ -118,7 +133,3 @@ def prepare_apc_sheet(date):
     # save data
     apc_today.save(final_apc_file_path)
     apc_today.close()
-
-# if __name__ == '__main__':
-#     # prepare apc sheet
-#     prepare_apc_sheet()

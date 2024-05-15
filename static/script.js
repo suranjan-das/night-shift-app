@@ -12,7 +12,17 @@ function setTodaysDate() {
 }
 
 // Ensure the function runs after the page content has loaded
-document.addEventListener('DOMContentLoaded', setTodaysDate);
+// document.addEventListener('DOMContentLoaded', setTodaysDate);
+
+// Ensure the function runs after the page content has loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setTodaysDate();
+
+    // Display alert if error message is present
+    if (window.errorMessage) {
+        alert(window.errorMessage);
+    }
+});
 
 // Add event listener to the generate form to include the date in the submission
 document.getElementById('generateForm').addEventListener('submit', function(event) {

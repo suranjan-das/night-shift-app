@@ -19,8 +19,11 @@ def generate_files(date):
 # Route for home page
 @app.route('/')
 def home():
+    error = request.args.get('error')  # Get error message from query parameters
     files_in_generated = os.listdir('generated')
     files_in_uploads = os.listdir('uploads')
+    if error:
+        return render_template('index.html', files=files_in_generated, uploads_count=len(files_in_uploads), error=error)
     return render_template('index.html', files=files_in_generated, uploads_count=len(files_in_uploads))
 
 # Route for file upload
@@ -46,8 +49,12 @@ def generate():
     # Example with the standard date and time format
     date_format = "%Y-%m-%d"
     date_obj = datetime.strptime(selected_date, date_format)
-    print(date_obj)
-    generate_files(date_obj)
+    try:
+        generate_files(date_obj)
+    except FileNotFoundError as e:
+        # Handle the error by returning a message or logging it
+        print(f"Error: {e}")
+        return redirect(url_for('home', error=f"Error: {e}"))
     return redirect(url_for('home'))
 
 

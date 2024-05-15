@@ -1,9 +1,20 @@
-from openpyxl.workbook.workbook import Workbook
-from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl import load_workbook
 
 import pandas as pd
-from datetime import date, timedelta, datetime
+import os
+
+def check_file_exists(file_path):
+    """Checks if a file exists.
+
+    Args:
+        file_path: The path to the file.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+    """
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"The file {file_path} does not exist.")
 
 def prepare_edm_file(date):
     rdt_1 = date.strftime('%d-%m-%Y')
@@ -19,6 +30,12 @@ def prepare_edm_file(date):
     agc_2_path = f"./uploads/Talcher2_{rdt_2}.csv"
     report_1_path = "./uploads/Report_1.xls"
     report_2_path = "./uploads/Report_2.xls"
+
+    paths = [edm_file_path, injection_1_path, injection_2_path,
+             agc_1_path, agc_2_path, report_1_path, report_2_path]
+    
+    for path in paths:
+        check_file_exists(path)
 
     # read AG and DC data
     abt_1 = pd.read_html(report_1_path)[0]
@@ -213,6 +230,7 @@ def copy_excel_to_txt(excel_file, txt_file, sheet_name, date):
 
 def prepare_txt_file(date):
     final_edm_file_path = "./generated/Daily EDM profiles Blockwise ABT Data upload.xlsx"
+    check_file_exists(final_edm_file_path)
     # generate text file
     copy_excel_to_txt(final_edm_file_path, './generated/st1.txt', 'Daily-Stg1', date)
     copy_excel_to_txt(final_edm_file_path, './generated/st2.txt', 'Daily Stg-2', date)
@@ -220,8 +238,10 @@ def prepare_txt_file(date):
 def prepare_daily_data_entry(date):
     rdt_3 = date.strftime('%d.%m.%Y')
     daily_data_path = "./file_templates/Daily data entry Format-TSTPS template.xlsx"
+    check_file_exists(daily_data_path)
     daily_final_path = "./generated/Daily data entry Format-TSTPS.xlsx"
     pi_file_path = f"./uploads/PI {rdt_3}.xlsx"
+    check_file_exists(pi_file_path)
     # Load the Excel workbook
     dl = load_workbook(daily_data_path)
     # Select the desired sheet (optional)
@@ -234,7 +254,7 @@ def prepare_daily_data_entry(date):
     # update unit generation
     for i in range(6):
         dl_sheet['F' + str(9+i)].value = pi_sheet['H' + str(8 + 2*i)].value
-
+    check_file_exists('./generated/st1.txt')
     for i in range(22):
         with open('./generated/st1.txt', 'r') as f:
             lines = f.readlines()
@@ -252,6 +272,7 @@ def prepare_daily_data_entry(date):
                     dl_sheet['F' + str(15+i)].value = round(sum/10, 6)
 
     st2_daily_entry = []
+    check_file_exists('./generated/st2.txt')
     with open('./generated/st2.txt', 'r') as f:
         lines = f.readlines()
         for i, line in enumerate(lines):
@@ -292,9 +313,3 @@ def prepare_daily_data_entry(date):
 
     dl.save(daily_final_path)
     dl.close()
-
-# if __name__ == '__main__':
-    # prepare edm sheet
-    # prepare_edm_sheet()
-    # generate text file
-    # prepare_txt_file()

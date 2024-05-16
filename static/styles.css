@@ -35,9 +35,6 @@ form {
 }
 
 input[type="file"], input[type="date"] {
-    display: block;
-    width: calc(100% - 20px);
-    margin-bottom: 20px;
     padding: 12px 10px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -90,16 +87,29 @@ input[type="submit"]:hover {
 label {
     font-size: 16px;
     font-weight: bold;
-    margin-bottom: 8px;
-    display: block;
 }
 
-/* Loading message style */
 #loadingMessage {
     font-size: 16px;
     color: #333;
     text-align: center;
     margin-top: 20px;
+}
+
+/* Form group styles */
+.form-group {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Adjusts the space between elements */
+    margin-bottom: 20px;
+}
+
+input[type="date"] {
+    flex: 0 0 20%;
+}
+
+input[type="file"] {
+    flex: 1;
 }
 
 /* Responsive design */
@@ -109,14 +119,23 @@ label {
         margin: 10px;
     }
 
+    .form-group {
+        flex-direction: column;
+    }
+
     input[type="file"], input[type="date"] {
-        width: calc(100% - 10px);
+        width: 100%;
     }
 
     input[type="submit"] {
         width: 100%;
         padding: 12px;
         font-size: 18px;
+    }
+
+    .delete-button {
+        margin-left: 0;
+        margin-top: 20px; /* Adds a gap when in column layout */
     }
 
     label {

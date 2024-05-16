@@ -11,13 +11,13 @@
     <div class="container">
         <h2>Night Shift Calculation</h2>
 
-         <!-- Date Picker Section -->
-         <label for="datePicker">Select Date: </label>
-         <input type="date" id="datePicker" name="datePicker">
-         <br>
-
-        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file[]" multiple>
+         <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <!-- Date Picker and File Chooser Section -->
+            <div class="form-group">
+                <!-- <label for="datePicker">Select Date: </label> -->
+                <input type="date" id="datePicker" name="datePicker">
+                <input type="file" name="file[]" multiple>
+            </div>
             <input type="submit" value="Upload">
         </form>
         {% if uploads_count > 0 %}
@@ -33,19 +33,19 @@
             <li>PI data file (PI dd.mm.yyyy.xlsx)</li>
             <li>AGC data file of both stage (Talcher1/2_dd_mm_yyyy.csv)</li>
         </ul>
-        <h3>Generated Files:</h3>
+        <h4>Generated Files:</h4>
         <ul>
             {% for file in files %}
             <li><a href="/download/generated/{{ file }}">{{ file }}</a></li>
             {% endfor %}
         </ul>
         <div id="loadingMessage" style="display: none;">Generating... Please wait.</div>
-        <br>
+        <!-- <br> -->
         <form id="generateForm" method="post" action="/generate" style="display: inline">
             <input type="submit" value="Generate Files">
         </form>
         <form action="/delete_all" method="get" style="display: inline">
-            <input type="submit" value="Delete All Files">
+            <input type="submit" value="Delete All Files" class="delete-button">
         </form>
     </div>
 

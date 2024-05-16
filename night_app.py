@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for
+from flask import Flask, render_template, request, send_file, redirect, url_for, session
 import os
 from calculation import prepare_apc_sheet
 from calculation_edm import prepare_edm_file, prepare_txt_file, prepare_daily_data_entry
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Required for session management
 
 # Function to generate files
 def generate_files(date):
@@ -16,9 +17,30 @@ def generate_files(date):
     prepare_txt_file(date)
     prepare_daily_data_entry(date)
 
+# Dummy user credentials
+USER_CREDENTIALS = {
+    "user1": "password1",
+    "user2": "password2"
+}
+
+# Route for login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        userid = request.form['userid']
+        password = request.form['password']
+        if userid in USER_CREDENTIALS and USER_CREDENTIALS[userid] == password:
+            session['user'] = userid
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', error="Invalid credentials")
+    return render_template('login.html')
+
 # Route for home page
 @app.route('/')
 def home():
+    if 'user' not in session:
+        return redirect(url_for('login'))
     error = request.args.get('error')  # Get error message from query parameters
     files_in_generated = os.listdir('generated')
     files_in_uploads = os.listdir('uploads')
@@ -73,4 +95,5 @@ if __name__ == '__main__':
     # Ensure 'uploads' directory exists
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
+    # app.run(debug=True)

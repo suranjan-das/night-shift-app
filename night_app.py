@@ -3,38 +3,47 @@ import os
 from calculation import prepare_apc_sheet
 from calculation_edm import prepare_edm_file, prepare_txt_file, prepare_daily_data_entry
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Required for session management
+app.secret_key = os.getenv("SECRET_KEY")
+
+USERNAME = os.getenv("USERID")
+PASSWORD = os.getenv("PASSWORD")  # Required for session management
 
 # Function to generate files
 def generate_files(date):
     # Your Python program logic to generate files goes here
     if not os.path.exists('generated'):
         os.makedirs('generated')
-    prepare_apc_sheet(date)
-    prepare_edm_file(date)
-    prepare_txt_file(date)
-    prepare_daily_data_entry(date)
-
-# Dummy user credentials
-USER_CREDENTIALS = {
-    "user1": "password1",
-    "user2": "password2"
-}
+    # do the calculatoin and make reports
+    prepare_apc_sheet(date) # genrates todays APC sheet
+    prepare_edm_file(date) # genrates EDM file
+    prepare_txt_file(date) # generates profile txt files
+    prepare_daily_data_entry(date) # prepare daily entry file
 
 # Route for login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        # get submitted userid and password
         userid = request.form['userid']
         password = request.form['password']
-        if userid in USER_CREDENTIALS and USER_CREDENTIALS[userid] == password:
+        # authenticate
+        if userid == USERNAME and password == PASSWORD:
             session['user'] = userid
             return redirect(url_for('home'))
         else:
             return render_template('login.html', error="Invalid credentials")
     return render_template('login.html')
+
+# Route for logout
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('login'))
 
 # Route for home page
 @app.route('/')
@@ -77,6 +86,9 @@ def generate():
         # Handle the error by returning a message or logging it
         print(f"Error: {e}")
         return redirect(url_for('home', error=f"Error: {e}"))
+    except Exception as e:
+        return redirect(url_for('home', error=f"Error: {e}"))
+
     return redirect(url_for('home'))
 
 
@@ -95,5 +107,4 @@ if __name__ == '__main__':
     # Ensure 'uploads' directory exists
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
-    app.run(host="0.0.0.0", debug=True)
-    # app.run(debug=True)
+    app.run(debug=True)

@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload and Download</title>
+    <title>Night App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
     <div class="container">
-        <h2>Night Shift Calculation</h2>
+        <div class="header">
+            <h2>Night Shift Calculation</h2>
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
 
-         <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
             <!-- Date Picker and File Chooser Section -->
             <div class="form-group">
-                <!-- <label for="datePicker">Select Date: </label> -->
                 <input type="date" id="datePicker" name="datePicker">
                 <input type="file" name="file[]" multiple>
             </div>
             <input type="submit" value="Upload">
         </form>
+        <!-- jinja template for showing number of files uploaded -->
         {% if uploads_count > 0 %}
         <h5>{{ uploads_count }} file(s) uploaded in the uploads folder.</h5>
         {% endif %}
-        
+        <!-- simple instructions -->
         <h4>Upload the following files:</h4>
         <ul>
             <li>Previous day APC file (APC_dd.mm.yyyy.xlsx)</li>
@@ -40,7 +43,6 @@
             {% endfor %}
         </ul>
         <div id="loadingMessage" style="display: none;">Generating... Please wait.</div>
-        <!-- <br> -->
         <form id="generateForm" method="post" action="/generate" style="display: inline">
             <input type="submit" value="Generate Files">
         </form>

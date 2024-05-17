@@ -2,6 +2,7 @@ from openpyxl import load_workbook
 
 import pandas as pd
 import os
+import re
 
 def check_file_exists(file_path):
     """Checks if a file exists.
@@ -17,6 +18,7 @@ def check_file_exists(file_path):
         raise FileNotFoundError(f"The file {file_path} does not exist.")
 
 def prepare_edm_file(date):
+    # format date in different way
     rdt_1 = date.strftime('%d-%m-%Y')
     rdt_2 = date.strftime('%d_%m_%Y')
     rdt_3 = date.strftime('%d.%m.%Y')
@@ -30,10 +32,18 @@ def prepare_edm_file(date):
     agc_2_path = f"./uploads/Talcher2_{rdt_2}.csv"
     report_1_path = "./uploads/Report_1.xls"
     report_2_path = "./uploads/Report_2.xls"
-
+    # pattern for injection profile files
+    injection_1_pattern = f"FullSchedule-InjectionSummary-TSTPP-I\(\d+\)-{rdt_1}.xlsx"
+    injection_2_pattern = f"FullSchedule-InjectionSummary-TALST2\(\d+\)-{rdt_1}.xlsx"
+    # get the correct file name
+    for file in os.listdir("./uploads"):
+        if re.match(injection_1_pattern, file):
+            injection_1_path = os.path.join("./uploads", file)
+        if re.match(injection_2_pattern, file):
+            injection_2_path = os.path.join("./uploads", file)
+    # check if all required file exists
     paths = [edm_file_path, injection_1_path, injection_2_path,
-             agc_1_path, agc_2_path, report_1_path, report_2_path]
-    
+             agc_1_path, agc_2_path, report_1_path, report_2_path]    
     for path in paths:
         check_file_exists(path)
 
@@ -81,6 +91,7 @@ def prepare_edm_file(date):
     edm.save(final_edm_file_path)
     edm.close()
 
+# python rounding is funny, implemented excel rounding function
 def excel_round(number, digits=2):
     s = f"{number:0.{digits+2}f}"[:-1]
     if int(s[-1]) >= 5:

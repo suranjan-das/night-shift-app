@@ -265,6 +265,7 @@ def prepare_daily_data_entry(date):
     # update unit generation
     for i in range(6):
         dl_sheet['F' + str(9+i)].value = pi_sheet['H' + str(8 + 2*i)].value
+    st1_daily_entry = []
     check_file_exists('./generated/st1.txt')
     for i in range(22):
         with open('./generated/st1.txt', 'r') as f:
@@ -278,9 +279,34 @@ def prepare_daily_data_entry(date):
                     except ValueError:
                         pass
                 if i < 3:
-                    dl_sheet['F' + str(15+i)].value = round(sum/4000, 6)
+                    st1_daily_entry.append(round(sum/4000, 6))
+                    # dl_sheet['F' + str(15+i)].value = round(sum/4000, 6)
                 else:
-                    dl_sheet['F' + str(15+i)].value = round(sum/10, 6)
+                    st1_daily_entry.append(round(sum/10, 6))
+                    # dl_sheet['F' + str(15+i)].value = round(sum/10, 6)
+
+    dl_sheet['F15'].value = st1_daily_entry[0]
+    dl_sheet['F16'].value = st1_daily_entry[1]
+    dl_sheet['F17'].value = st1_daily_entry[2]
+    dl_sheet['F18'].value = st1_daily_entry[3]
+    dl_sheet['F19'].value = st1_daily_entry[4]
+    dl_sheet['F20'].value = st1_daily_entry[5]
+    dl_sheet['F21'].value = st1_daily_entry[6]
+    dl_sheet['F22'].value = st1_daily_entry[7]
+    dl_sheet['F23'].value = st1_daily_entry[8]
+    dl_sheet['F24'].value = st1_daily_entry[15]
+    dl_sheet['F25'].value = st1_daily_entry[16]
+    dl_sheet['F26'].value = st1_daily_entry[9]
+    dl_sheet['F27'].value = st1_daily_entry[10]
+    dl_sheet['F28'].value = st1_daily_entry[11]
+    dl_sheet['F29'].value = st1_daily_entry[12]
+    dl_sheet['F30'].value = st1_daily_entry[13]
+    dl_sheet['F31'].value = st1_daily_entry[14]
+    dl_sheet['F32'].value = st1_daily_entry[17]
+    dl_sheet['F33'].value = st1_daily_entry[18]
+    dl_sheet['F34'].value = st1_daily_entry[19]
+    dl_sheet['F35'].value = st1_daily_entry[20]
+    dl_sheet['F36'].value = st1_daily_entry[21]
 
     st2_daily_entry = []
     check_file_exists('./generated/st2.txt')
@@ -308,14 +334,14 @@ def prepare_daily_data_entry(date):
     dl_sheet['F43'].value = st2_daily_entry[6]
     dl_sheet['F44'].value = st2_daily_entry[7]
     dl_sheet['F45'].value = st2_daily_entry[8]
-    dl_sheet['F46'].value = st2_daily_entry[11]
-    dl_sheet['F47'].value = st2_daily_entry[12]
-    dl_sheet['F48'].value = st2_daily_entry[13]
-    dl_sheet['F49'].value = st2_daily_entry[14]
-    dl_sheet['F50'].value = st2_daily_entry[15]
-    dl_sheet['F51'].value = st2_daily_entry[16]
-    dl_sheet['F52'].value = st2_daily_entry[9]
-    dl_sheet['F53'].value = st2_daily_entry[10]
+    dl_sheet['F46'].value = st2_daily_entry[9]
+    dl_sheet['F47'].value = st2_daily_entry[10]
+    dl_sheet['F48'].value = st2_daily_entry[11]
+    dl_sheet['F49'].value = st2_daily_entry[12]
+    dl_sheet['F50'].value = st2_daily_entry[13]
+    dl_sheet['F51'].value = st2_daily_entry[14]
+    dl_sheet['F52'].value = st2_daily_entry[15]
+    dl_sheet['F53'].value = st2_daily_entry[16]
     dl_sheet['F54'].value = st2_daily_entry[17]
     dl_sheet['F55'].value = st2_daily_entry[18]
     dl_sheet['F56'].value = st2_daily_entry[19]

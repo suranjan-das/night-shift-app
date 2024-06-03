@@ -280,10 +280,8 @@ def prepare_daily_data_entry(date):
                         pass
                 if i < 3:
                     st1_daily_entry.append(round(sum/4000, 6))
-                    # dl_sheet['F' + str(15+i)].value = round(sum/4000, 6)
                 else:
                     st1_daily_entry.append(round(sum/10, 6))
-                    # dl_sheet['F' + str(15+i)].value = round(sum/10, 6)
 
     dl_sheet['F15'].value = st1_daily_entry[0]
     dl_sheet['F16'].value = st1_daily_entry[1]

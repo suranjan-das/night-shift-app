@@ -133,3 +133,18 @@ def prepare_apc_sheet(date):
     # save data
     apc_today.save(final_apc_file_path)
     apc_today.close()
+    apc_previous.close()
+    pi_today.close()
+    daily_gen_report.close()
+
+def prepare_sap_helper(date):
+    daily_gen_file_path = f"./uploads/DAILY GENERATION REPORT ON THE DATE {date}.xlsx"
+    daily_gen_report = load_workbook(daily_gen_file_path, data_only=True)
+    helper_path = "./file_templates/SAP helper.xlsx"
+    final_helper_path = "./generated/SAP helper.xlsx"
+    check_file_exists(helper_path)
+    sap_helper = load_workbook(helper_path)
+    copy_range(daily_gen_report, sap_helper, "SAP POSTING DATA", "Sheet1", (2, 21), 3, 11)
+    sap_helper.save(final_helper_path)
+    sap_helper.close()
+    daily_gen_report.close()

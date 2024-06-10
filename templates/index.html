@@ -44,6 +44,15 @@
         </ul>
         <div id="loadingMessage" style="display: none;">Generating... Please wait.</div>
         <form id="generateForm" method="post" action="/generate" style="display: inline">
+            <div>
+                <input type="radio" id="generateApc" name="generateOption" value="apc" checked>
+                <label for="generateApc">Generate APC File</label>
+            </div>
+            <div>
+                <input type="radio" id="generateRest" name="generateOption" value="rest">
+                <label for="generateRest">Generate Rest of the Files</label>
+            </div>
+            <br>
             <input type="submit" value="Generate Files">
         </form>
         <form action="/delete_all" method="get" style="display: inline">

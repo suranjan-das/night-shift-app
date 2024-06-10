@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_file, redirect, url_for, session
 import os
-from calculation import prepare_apc_sheet
+from calculation import prepare_apc_sheet, prepare_sap_helper
 from calculation_edm import prepare_edm_file, prepare_txt_file, prepare_daily_data_entry
 from datetime import datetime
 from dotenv import load_dotenv
@@ -14,15 +14,18 @@ USERNAME = os.getenv("USERID")
 PASSWORD = os.getenv("PASSWORD")  # Required for session management
 
 # Function to generate files
-def generate_files(date):
+def generate_files(date, generate_option):
     # Your Python program logic to generate files goes here
     if not os.path.exists('generated'):
         os.makedirs('generated')
     # do the calculatoin and make reports
-    prepare_apc_sheet(date) # genrates todays APC sheet
-    prepare_edm_file(date) # genrates EDM file
-    prepare_txt_file(date) # generates profile txt files
-    prepare_daily_data_entry(date) # prepare daily entry file
+    if generate_option == 'apc':
+        prepare_apc_sheet(date) # genrates todays APC sheet
+    if generate_option == 'rest':
+        prepare_edm_file(date) # genrates EDM file
+        prepare_txt_file(date) # generates profile txt files
+        prepare_daily_data_entry(date) # prepare daily entry file
+        prepare_sap_helper(date.strftime('%d.%m.%Y')) # prepare sap helper
 
 # Route for login page
 @app.route('/login', methods=['GET', 'POST'])
@@ -77,11 +80,15 @@ def download(filename):
 @app.route('/generate', methods=['POST'])
 def generate():
     selected_date = request.form['datePicker']
+    generate_option = request.form.get('generateOption')
+
+    if not generate_option:
+        return redirect(url_for('home', error="No generation option selected"))
     # Example with the standard date and time format
     date_format = "%Y-%m-%d"
     date_obj = datetime.strptime(selected_date, date_format)
     try:
-        generate_files(date_obj)
+        generate_files(date_obj, generate_option)
     except FileNotFoundError as e:
         # Handle the error by returning a message or logging it
         print(f"Error: {e}")

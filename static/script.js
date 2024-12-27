@@ -48,3 +48,16 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         event.preventDefault(); // Prevent form submission
     }
 });
+
+if (!!window.EventSource) {
+    var source = new EventSource("/status");
+    source.onmessage = function(event) {
+        console.log('Status update:', event.data);
+        if (event.data === 'completed') {
+            location.reload();
+        } else if (event.data.startsWith('error:')) {
+            alert('An error occurred: ' + event.data);
+            location.reload();
+        }
+    };
+}

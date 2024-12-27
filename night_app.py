@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for, session
+from flask import Flask, render_template, request, send_file, redirect, url_for, session, Response
 import os
 from calculation import prepare_apc_sheet, prepare_sap_helper
 from calculation_edm import prepare_edm_file, prepare_txt_file, prepare_daily_data_entry
 from datetime import datetime
 from dotenv import load_dotenv
+import threading
+import time
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -13,19 +15,28 @@ app.secret_key = os.getenv("SECRET_KEY")
 USERNAME = os.getenv("USERID")
 PASSWORD = os.getenv("PASSWORD")  # Required for session management
 
+generation_status = None  # Global variable to store the generation status
+
 # Function to generate files
-def generate_files(date, generate_option):
+def generate_files(date):
     # Your Python program logic to generate files goes here
     if not os.path.exists('generated'):
         os.makedirs('generated')
     # do the calculatoin and make reports
-    if generate_option == 'apc':
-        prepare_apc_sheet(date) # genrates todays APC sheet
-    if generate_option == 'rest':
-        prepare_edm_file(date) # genrates EDM file
-        prepare_txt_file(date) # generates profile txt files
-        prepare_daily_data_entry(date) # prepare daily entry file
-        prepare_sap_helper(date.strftime('%d.%m.%Y')) # prepare sap helper
+    prepare_apc_sheet(date) # genrates todays APC sheet
+    prepare_edm_file(date) # genrates EDM file
+    prepare_txt_file(date) # generates profile txt files
+    prepare_daily_data_entry(date) # prepare daily entry file
+    prepare_sap_helper(date.strftime('%d.%m.%Y')) # prepare sap helper
+
+# Function to run file generation in a thread
+def generate_files_thread(date):
+    global generation_status
+    try:
+        generate_files(date)
+        generation_status = 'completed'
+    except Exception as e:
+        generation_status = f'error: {e}'
 
 # Route for login page
 @app.route('/login', methods=['GET', 'POST'])
@@ -80,23 +91,37 @@ def download(filename):
 @app.route('/generate', methods=['POST'])
 def generate():
     selected_date = request.form['datePicker']
-    generate_option = request.form.get('generateOption')
 
-    if not generate_option:
-        return redirect(url_for('home', error="No generation option selected"))
     # Example with the standard date and time format
     date_format = "%Y-%m-%d"
     date_obj = datetime.strptime(selected_date, date_format)
-    try:
-        generate_files(date_obj, generate_option)
-    except FileNotFoundError as e:
-        # Handle the error by returning a message or logging it
-        print(f"Error: {e}")
-        return redirect(url_for('home', error=f"Error: {e}"))
-    except Exception as e:
-        return redirect(url_for('home', error=f"Error: {e}"))
+
+    # Start the file generation in a new thread
+    threading.Thread(target=generate_files_thread, args=(date_obj,)).start()
 
     return redirect(url_for('home'))
+
+# # Route for generating files
+# @app.route('/generate', methods=['POST'])
+# def generate():
+#     selected_date = request.form['datePicker']
+#     generate_option = request.form.get('generateOption')
+
+#     if not generate_option:
+#         return redirect(url_for('home', error="No generation option selected"))
+#     # Example with the standard date and time format
+#     date_format = "%Y-%m-%d"
+#     date_obj = datetime.strptime(selected_date, date_format)
+#     try:
+#         generate_files(date_obj, generate_option)
+#     except FileNotFoundError as e:
+#         # Handle the error by returning a message or logging it
+#         print(f"Error: {e}")
+#         return redirect(url_for('home', error=f"Error: {e}"))
+#     except Exception as e:
+#         return redirect(url_for('home', error=f"Error: {e}"))
+
+#     return redirect(url_for('home'))
 
 
 # Route for deleting all files
@@ -109,6 +134,20 @@ def delete_all():
     for file in uploaded_files:
         os.remove(os.path.join('uploads', file))
     return redirect(url_for('home'))
+
+# Server-Sent Events (SSE) to notify client when generation is complete
+@app.route('/status')
+def status():
+    def generate():
+        while True:
+            global generation_status
+            if generation_status:
+                yield f'data: {generation_status}\n\n'
+                generation_status = None
+                break
+            time.sleep(1)
+
+    return Response(generate(), mimetype='text/event-stream')
 
 if __name__ == '__main__':
     # Ensure 'uploads' directory exists

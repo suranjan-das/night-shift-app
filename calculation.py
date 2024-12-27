@@ -67,11 +67,20 @@ def copy_data(destination_wb, sheet_name, data, row_range, col_num):
         # copy and paste
         dest_ws.cell(row_num, col_num - 1).value = data[i]
 
+# def get_em_readings(url):
+#     night_df = pd.read_csv(url)
+#     night_df = night_df.fillna('')
+#     unit_readings = [night_df.iloc[i, 4] for i in range(2, 37)]
+#     line_readings = [night_df.iloc[i, 11] for i in range(2, 77)]
+#     return unit_readings, line_readings
+
 def get_em_readings(url):
-    night_df = pd.read_csv(url)
-    night_df = night_df.fillna('')
-    unit_readings = [night_df.iloc[i, 4] for i in range(2, 37)]
-    line_readings = [night_df.iloc[i, 11] for i in range(2, 77)]
+    night_df = pd.read_csv(url).fillna('')
+    
+    # Use vectorized operations to extract the readings
+    unit_readings = night_df.iloc[2:37, 4].tolist()
+    line_readings = night_df.iloc[2:77, 11].tolist()
+    
     return unit_readings, line_readings
 
 def update_solar(source_wb, destination_wb, source_sheet_name, destination_sheet_name):
